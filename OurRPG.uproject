@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{78AF2F62-4860-8E6C-387A-21A94929A4BC}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "OurRPG",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
