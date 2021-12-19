@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "DefaultCharacter.generated.h"
@@ -42,4 +43,17 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 		UCameraComponent* CharacterCameraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+		USpringArmComponent* SpringArmComponent;
+
+private:
+	void PitchCamera(float value);
+	void YawCamera(float value);
+	void ZoomIn();
+	void ZoomOut();
+
+
+	FVector2D CameraInput;
+	float ZoomFactor;
 };
