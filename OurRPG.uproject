@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{95931924-44E0-99A0-0F23-738AFA1BBCCE}",
+	"EngineAssociation": "{78AF2F62-4860-8E6C-387A-21A94929A4BC}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -9,8 +9,16 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine"
+				"Engine",
+				"CoreUObject",
+				"GameplayAbilities"
 			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "GameplayAbilities",
+			"Enabled": true
 		}
 	]
 }
