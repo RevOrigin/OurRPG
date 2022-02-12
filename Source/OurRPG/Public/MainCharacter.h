@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponActor.h"
 #include "GameFramework/Character.h"
 #include "MainCharacter.generated.h"
 
@@ -31,8 +32,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UMainAttributeComponent* AttributeComponent;
 
+	// 武器类型
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AWeaponActor> WeaponClass = AWeaponActor::StaticClass();
 
-
+	// 当前的武器
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AWeaponActor* CurrentWeapon;
+	
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
@@ -60,6 +67,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void BeginPlay() override;
+	
 	UFUNCTION(Exec)
 	void HealSelf(float Amount = 100);
 };

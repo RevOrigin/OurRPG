@@ -38,6 +38,8 @@ AMainCharacter::AMainCharacter()
 	// 胶囊不产生碰撞
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	TimeToHitParamName = "TimeToHit";
+	
+	
 }
 
 void AMainCharacter::PostInitializeComponents()
@@ -65,7 +67,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
 
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("Lookup", this, &APawn::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMainCharacter::Attack);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMainCharacter::Dash);
@@ -149,6 +151,39 @@ void AMainCharacter::OnHealthChanged(AActor* InstigatorActor, UMainAttributeComp
 
 		SetLifeSpan(5.0f);
 	}
+}
+
+void AMainCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	FVector LineStart = GetActorLocation();
+
+	LineStart += GetActorRightVector() * 100.f;
+
+	FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * 100.f);
+
+	DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirection_LineEnd, 1.0f, FColor::Yellow, false, .0f, 0, 1.0f);
+
+	FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.f);
+	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, 1.0f, FColor::Yellow, false, .0f, 0, 1.0f);
+
+}
+
+
+void AMainCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	// 创建默认的武器
+	// SnapToTargetNotIncludingScale:保持物体缩放
+	CurrentWeapon = GetWorld()->SpawnActor<AWeaponActor>(AWeaponActor::StaticClass());
+
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->GetWeaponMesh()->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("right_weapon"));
+	}
+	
 }
 
 
