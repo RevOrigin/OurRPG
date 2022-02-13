@@ -10,7 +10,7 @@ AWeaponActor::AWeaponActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
-
+	
 	// 加载网格资源
     if (!WeaponMeshAsset)
     {
@@ -26,6 +26,8 @@ AWeaponActor::AWeaponActor()
 	    WeaponMesh->SetStaticMesh(WeaponMeshAsset);
     	UE_LOG(LogTemp, Log, TEXT("set weapon mesh"));
     }
+	WeaponMesh->SetSimulatePhysics(false);
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned

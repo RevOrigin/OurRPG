@@ -90,7 +90,7 @@ void AMainCharacter::MoveForward(float Value)
 	FRotator Rot = GetControlRotation();
 	Rot.Pitch = 0.f;
 	Rot.Roll = 0.f;
-
+	UE_LOG(LogTemp, Log, TEXT("direction:%s"), *Rot.ToString());
 	AddMovementInput(Rot.Vector(), Value);
 }
 
@@ -102,7 +102,7 @@ void AMainCharacter::MoveRight(float Value)
 
 	FVector RightVector = FRotationMatrix(Rot).GetScaledAxis(EAxis::Y);
 
-	AddMovementInput(RightVector, Value);
+	//AddMovementInput(RightVector, Value);
 }
 
 void AMainCharacter::FlyStart()
@@ -166,7 +166,7 @@ void AMainCharacter::Tick(float DeltaSeconds)
 	DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirection_LineEnd, 1.0f, FColor::Yellow, false, .0f, 0, 1.0f);
 
 	FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.f);
-	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, 1.0f, FColor::Yellow, false, .0f, 0, 1.0f);
+	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, 1.0f, FColor::Green, false, .0f, 0, 1.0f);
 
 }
 
@@ -181,7 +181,13 @@ void AMainCharacter::BeginPlay()
 
 	if (CurrentWeapon)
 	{
-		CurrentWeapon->GetWeaponMesh()->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("right_weapon"));
+		
+		// auto rotator = CurrentWeapon->GetWeaponMesh()->GetRelativeRotation().Euler();
+		// rotator.Z = -90.f;
+		// CurrentWeapon->GetWeaponMesh()->SetRelativeRotation(FRotator::MakeFromEuler(rotator));
+		//CurrentWeapon->GetWeaponMesh()->SetupAttachment(GetMesh(), TEXT("right_weapon"));
+
+		CurrentWeapon->GetWeaponMesh()->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("right_weapon"));
 	}
 	
 }
