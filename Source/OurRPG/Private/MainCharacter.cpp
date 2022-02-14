@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 #include "MainAttributeComponent.h"
+#include "MainCharacterAnim.h"
 // Sets default values
 AMainCharacter::AMainCharacter()
 {
@@ -38,8 +39,6 @@ AMainCharacter::AMainCharacter()
 	// 胶囊不产生碰撞
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	TimeToHitParamName = "TimeToHit";
-	
-	
 }
 
 void AMainCharacter::PostInitializeComponents()
@@ -102,7 +101,7 @@ void AMainCharacter::MoveRight(float Value)
 
 	FVector RightVector = FRotationMatrix(Rot).GetScaledAxis(EAxis::Y);
 
-	//AddMovementInput(RightVector, Value);
+	AddMovementInput(RightVector, Value);
 }
 
 void AMainCharacter::FlyStart()
@@ -117,8 +116,44 @@ void AMainCharacter::FlyStop()
 
 void AMainCharacter::Attack()
 {
+	// 超过10帧，断开连击
+	if (GFrameNumber - LastAttackFrame > 20)
+	{
+		CurrentAttackChain = 0;
+	}
+	LastAttackFrame = GFrameNumber;
+
+	if (bIsAttacking)
+	{
+		return;
+	}
+
+	PlayAttackAnim(CurrentAttackChain);
 	// todo:action
+	TakingBlade = true;
 }
+
+void AMainCharacter::AttackEnd()
+{
+	UE_LOG(LogTemp,Log, TEXT("AttackEnd"));
+	CurrentAttackChain = (CurrentAttackChain + 1) % 4;
+	bIsAttacking = false;
+	LastAttackFrame = GFrameNumber;
+	
+}
+
+
+void AMainCharacter::PlayAttackAnim(int chain)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (!bIsAttacking && AnimMontage && AnimInstance && !AnimInstance->Montage_IsPlaying(AnimMontage))
+	{
+		AnimInstance->Montage_Play(AnimMontage);
+		FString name = "Attack" + FString::FromInt(chain);
+		AnimInstance->Montage_JumpToSection(FName(*name), AnimMontage);
+	}
+}
+
 
 void AMainCharacter::Dash()
 {
@@ -175,9 +210,10 @@ void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	
 	// 创建默认的武器
 	// SnapToTargetNotIncludingScale:保持物体缩放
-	CurrentWeapon = GetWorld()->SpawnActor<AWeaponActor>(AWeaponActor::StaticClass());
+	CurrentWeapon = GetWorld()->SpawnActor<AWeaponActor>(WeaponClass);
 
 	if (CurrentWeapon)
 	{

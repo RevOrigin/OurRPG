@@ -39,6 +39,9 @@ protected:
 	// 当前的武器
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AWeaponActor* CurrentWeapon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimMontage* AnimMontage;
 	
 	void MoveForward(float Value);
 	void MoveRight(float Value);
@@ -47,6 +50,9 @@ protected:
 	void FlyStop();
 
 	void Attack();
+	
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
 
 	void Dash();
 
@@ -59,7 +65,22 @@ protected:
 
 	virtual FVector GetPawnViewLocation() const override;
 	
+
+	UPROPERTY(BlueprintReadOnly, Category="Animation")
+	bool TakingBlade;
+
+
+private:
+	// 播放连击n的动画
+	void PlayAttackAnim(int chain);
 	
+	// 当前的攻击连击数
+	int CurrentAttackChain = 0;
+
+	// 上一次攻击的帧
+	uint32_t LastAttackFrame = 0;
+	// 当前是否处于攻击状态
+	bool bIsAttacking = false;
 public:
 	// Sets default values for this character's properties
 	AMainCharacter();
@@ -73,4 +94,5 @@ public:
 	
 	UFUNCTION(Exec)
 	void HealSelf(float Amount = 100);
+	
 };
